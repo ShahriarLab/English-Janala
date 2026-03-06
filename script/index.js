@@ -3,13 +3,23 @@ const loadLessons = () => {
         .then(res => res.json())
         .then(json => displayLessons(json.data));
 };
-
+ const removeActive=()=>{
+    const lessonButtons = document.querySelectorAll(".lesson-btn")
+    // console.log(lessonButtons);
+    lessonButtons.forEach(btn =>btn.classList.remove("active"))
+ }
 const loadLevelWord = (id) => {
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
 
     fetch(url)
         .then(res => res.json())
-        .then(data => displayLevelWord(data.data));
+        .then(data => {
+            removeActive();//remove all active class
+             const clickBtn = document.getElementById(`lesson-btn-${id}`);
+            //  console.log(clickBtn);
+            clickBtn.classList.add("active"); // add active class
+            displayLevelWord (data.data) 
+        });
 };
 
 const displayLevelWord = (words) => {
@@ -43,7 +53,7 @@ const displayLevelWord = (words) => {
             <p class="font-semibold">Meaning /Pronounciation</p>
             <div class="text-2xl font-medium font-bangla">"${word.meaning ? word.meaning :"no meaning found"} / ${word.pronunciation ? word.pronunciation:"no pronunciation found"}"</div>
             <div class="flex justify-between items-center">
-                <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-circle-info"></i></button>
+                <button onclick="my_modal_5.showModal()" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-circle-info"></i></button>
                 <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]"><i class="fa-solid fa-volume-high"></i></i></button>
             </div>
 
@@ -63,7 +73,8 @@ const displayLessons = (lessons) => {
         const btnDiv = document.createElement("div");
 
         btnDiv.innerHTML = `
-        <button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary">
+        <button id="lesson-btn-${lesson.level_no}"
+         onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn">
         <i class="fa-brands fa-leanpub"></i> Lesson - ${lesson.level_no}
         </button>
         `;
